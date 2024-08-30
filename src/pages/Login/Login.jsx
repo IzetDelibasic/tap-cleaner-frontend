@@ -1,18 +1,16 @@
+// -React-
 import { useState } from "react";
 import { useNavigate, Link, Form } from "react-router-dom";
 import { toast } from "react-toastify";
 // -Constants-
-import { backgroundImage, trashIcon } from "../../constants/imageConstant";
+import { trashIcon, backgroundImage } from "../../constants/imageConstant";
+//- Axios -
+import axios from "axios";
 // -Components-
 import { FormRow } from "../../components";
-// -Axios-
-import axios from "axios";
 import { environment } from "../../environments/environments";
 
-const Register = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formValid, setFormValid] = useState(false);
@@ -20,52 +18,39 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    switch (name) {
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "lastName":
-        setLastName(value);
-        break;
-      case "imageUrl":
-        setImageUrl(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "password":
-        setPassword(value);
-        break;
-      default:
-        break;
-    }
-    setFormValid(
-      firstName.trim() !== "" &&
-        lastName.trim() !== "" &&
-        imageUrl.trim() !== "" &&
-        email.trim() !== "" &&
-        password.trim() !== ""
-    );
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
+    setFormValid(email.trim() !== "" && password.trim() !== "");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const userData = {
-      firstName,
-      lastName,
       email,
       password,
-      imageUrl,
-      role: "User",
     };
-
+    if (!formValid) return;
     try {
-      await axios.post(`${environment.apiBaseUrl}/User/Register`, userData);
-      toast.success("Registration successful!");
-      navigate("/login");
+      const response = await axios.post(
+        `${environment.apiBaseUrl}/User/Login`,
+        userData
+      );
+      const { firstName, lastName, email, phoneNumber } = response.data;
+      const loggedInUserData = {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+      };
+      localStorage.clear();
+      localStorage.setItem(
+        "loggedInUserData",
+        JSON.stringify(loggedInUserData)
+      );
+      toast.success("Login successful!");
+      navigate("/dashboard");
     } catch (err) {
-      toast.error("An error occurred!");
+      toast.error("An error occurred");
       console.error(err);
     }
   };
@@ -86,38 +71,19 @@ const Register = () => {
         </div>
       </div>
       <div className="bg-white bg-opacity-80 xl:w-[25%] w-[97%] sm:w-[50%] md:w-[40%] p-8 rounded-[10px] rounded-bl-none flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-bluePurple uppercase mb-4 text-center font-montserrat">
-          Register
+        <h1 className="text-2xl font-bold text-bluePurple uppercase mb-4 text-center">
+          Login
         </h1>
         <Form
-          method="post"
           className="flex flex-col items-center"
+          method="post"
           onSubmit={handleSubmit}
         >
-          <FormRow
-            type="text"
-            name="firstName"
-            labelText="First Name"
-            onChange={handleInputChange}
-          />
-          <FormRow
-            type="text"
-            name="lastName"
-            labelText="Last Name"
-            onChange={handleInputChange}
-          />
-          <FormRow
-            type="text"
-            name="imageUrl"
-            labelText="Image URL"
-            onChange={handleInputChange}
-          />
           <FormRow
             type="email"
             name="email"
             labelText="Email"
             onChange={handleInputChange}
-            placeholder="example@gmail.com"
           />
           <FormRow
             type="password"
@@ -125,22 +91,21 @@ const Register = () => {
             labelText="Password"
             onChange={handleInputChange}
           />
-
           <button
-            className={`relative bg-emerald-600 text-white font-medium py-[1rem] px-[3.5rem] md:px-[4rem] lg:px-[5rem] mr-0 mb-[20px] md:mb-0 rounded-[3rem] group overflow-hidden z-[1] ${
+            className={`relative bg-blue-500 text-white font-medium py-[1rem] px-[3.5rem] md:px-[4rem] lg:px-[5rem] mr-0 mb-[20px] md:mb-0 rounded-[3rem] group overflow-hidden z-[1] ${
               !formValid && "opacity-50 cursor-not-allowed"
             }`}
             type="submit"
             disabled={!formValid}
           >
-            <div className="">Register</div>
+            <div className="">Login</div>
             <div className="absolute inset-0 bg-black w-full transform origin-right transition-transform duration-300 group-hover:scale-x-0 z-[-1]"></div>
           </button>
         </Form>
-        <div className="pt-4 font-montserrat">
-          Already a member?
-          <Link to="/login" className="ml-1 font-medium text-emerald-600">
-            Login
+        <div className="pt-2 font-montserrat">
+          Not a member yet?
+          <Link to="/register" className="ml-1 font-medium text-emerald-600">
+            Register
           </Link>
         </div>
       </div>
@@ -148,4 +113,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

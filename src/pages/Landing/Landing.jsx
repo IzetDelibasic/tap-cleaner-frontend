@@ -16,7 +16,7 @@ const Landing = () => {
         </span>
         <nav className="ml-auto gap-4 sm:gap-6 hidden sm:flex">
           <Link
-            href="#"
+            to="/login"
             className="font-cabin hover:text-emerald-600 duration-300 ease-in-out"
             prefetch={false}
           >
