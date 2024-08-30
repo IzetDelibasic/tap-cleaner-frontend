@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { environment } from "../../environments/environments";
 
 const ContainersSection = () => {
   const [containers, setContainers] = useState([]);
@@ -23,7 +24,7 @@ const ContainersSection = () => {
         }
 
         const response = await axios.get(
-          "https://localhost:7072/Container/GetContainers",
+          `${environment.apiBaseUrl}/Container/GetContainers`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -43,6 +44,14 @@ const ContainersSection = () => {
     fetchContainers();
   }, []);
 
+  const handleSearchLocation = (coordinates) => {
+    window.open(`https://www.google.com/maps?q=${coordinates}`, "_blank");
+  };
+
+  const handleReportCondition = (containerId) => {
+    console.log(`${containerId}`);
+  };
+
   if (loading) {
     return <div>Učitavanje kontejnera...</div>;
   }
@@ -52,35 +61,51 @@ const ContainersSection = () => {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Kontejneri</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div>
+      <h1 className="my-6 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl text-center">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-gray-400 from-emerald-600">
+          Containers
+        </span>
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {containers.length > 0 ? (
           containers.map((container, index) => (
             <div
+              className="bg-white rounded-lg shadow-md p-6 mb-4 text-center border-[1px] border-opacity-25 border-black hover:border-blueColor ease-in-out duration-300"
               key={index}
-              className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             >
-              <h3 className="text-lg font-semibold">{container.name || ""}</h3>
-              <p className="text-sm text-gray-600">
-                Adresa: {container.adress || ""}
+              <h2 className="text-xl font-bold mb-2">{container.name || ""}</h2>
+              <p className="text-gray-600 mb-2">
+                Address: {container.adress || ""}
               </p>
-              <p className="text-sm text-gray-600">
-                Koordinate: {container.coordinates || ""}
+              <p className="text-gray-600 mb-2">
+                Coordinates: {container.coordinates || ""}
               </p>
-              <p className="text-sm text-gray-600">
-                Tip: {container.type || ""}
+              <p className="text-gray-600 mb-2">Type: {container.type || ""}</p>
+              <p className="text-gray-600 mb-2">
+                Condition: {container.condition || ""}
               </p>
-              <p className="text-sm text-gray-600">
-                Stanje: {container.condition || ""}
+              <p className="text-gray-600 mb-2">
+                Number of Reports: {container.numberOfReports || 0}
               </p>
-              <p className="text-sm text-gray-600">
-                Broj izvještaja: {container.numberOfReports || 0}
-              </p>
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  onClick={() => handleSearchLocation(container.coordinates)}
+                  className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-emerald-800 transition duration-300 ease-in-out"
+                >
+                  Location
+                </button>
+                <button
+                  onClick={() => handleReportCondition(container.id)}
+                  className="bg-red-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-800 transition duration-300 ease-in-out"
+                >
+                  Report
+                </button>
+              </div>
             </div>
           ))
         ) : (
-          <p>Nema kontejnera za prikaz.</p>
+          <p className="text-center">No containers available.</p>
         )}
       </div>
     </div>
