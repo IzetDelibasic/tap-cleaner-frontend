@@ -35,12 +35,13 @@ const Login = () => {
         `${environment.apiBaseUrl}/User/Login`,
         userData
       );
-      const { firstName, lastName, email, phoneNumber } = response.data;
+      const { firstName, lastName, email, imageUrl } = response.data;
+      console.log(response.data);
       const loggedInUserData = {
         firstName,
         lastName,
         email,
-        phoneNumber,
+        imageUrl,
       };
       localStorage.clear();
       localStorage.setItem(
@@ -48,7 +49,7 @@ const Login = () => {
         JSON.stringify(loggedInUserData)
       );
       toast.success("Login successful!");
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       toast.error("An error occurred");
       console.error(err);

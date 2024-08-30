@@ -5,6 +5,7 @@ import {
   heroImage,
   trashIcon,
 } from "../../constants/imageConstant";
+import { featuresConstant } from "../../constants/featuresConstant";
 
 const Landing = () => {
   return (
@@ -18,7 +19,6 @@ const Landing = () => {
           <Link
             to="/login"
             className="font-cabin hover:text-emerald-600 duration-300 ease-in-out"
-            prefetch={false}
           >
             Login
           </Link>
@@ -70,35 +70,14 @@ const Landing = () => {
             <div className="mx-auto flex flex-col md:flex-row-reverse mt-10">
               <div className="flex flex-col justify-center space-y-4">
                 <ul className="flex flex-col md:w-[70%] mx-auto">
-                  <li>
-                    <div className="flex flex-col">
-                      <h3 className="text-xl font-bold">Prijava problema</h3>
-                      <p className="pb-2">
-                        Jednostavno prijavite probleme s kontejnerima,
-                        nečistoćom ili drugim pitanjima.
-                      </p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="flex flex-col">
-                      <h3 className="text-xl font-bold">Praćenje statusa</h3>
-                      <p className="pb-2">
-                        Pratite status i stanje kontejnera u svome gradu, te
-                        pomozite revoluciji čišćenja da doživi ekspanziju.
-                      </p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="flex flex-col">
-                      <h3 className="text-xl font-bold">
-                        Unapređenje kvalitete
-                      </h3>
-                      <p className="pb-2">
-                        Vaše prijave pomažu u unapređenju kvalitete života u
-                        gradu, te očuvanju okoliša.
-                      </p>
-                    </div>
-                  </li>
+                  {featuresConstant.map((feature, index) => (
+                    <li key={index}>
+                      <div className="flex flex-col">
+                        <h3 className="text-xl font-bold">{feature.title}</h3>
+                        <p className="pb-2">{feature.description}</p>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <img
