@@ -10,14 +10,10 @@ const Landing = () => {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link
-          href="#"
-          className="flex items-center justify-center"
-          prefetch={false}
-        >
-          <img src={trashIcon} alt="Trash Icon" className="w-6 h-6 mr-2" />
-          <span className="text-xl font-bold font-cabin">Tap Cleaner</span>
-        </Link>
+        <img src={trashIcon} alt="Trash Icon" className="w-6 h-6 mr-2" />
+        <span className="text-xl font-bold font-subtitle cursor-default">
+          Tap Cleaner
+        </span>
         <nav className="ml-auto gap-4 sm:gap-6 hidden sm:flex">
           <Link
             href="#"
@@ -27,9 +23,8 @@ const Landing = () => {
             Login
           </Link>
           <Link
-            href="#"
+            to="/register"
             className="font-cabin hover:text-emerald-600 duration-300 ease-in-out"
-            prefetch={false}
           >
             Register
           </Link>
@@ -131,7 +126,7 @@ const Landing = () => {
                   title="Clean on Tap"
                   titleClassName="group-hover:text-white font-subtitle"
                 >
-                  <div className="absolute inset-0 bg-black w-full transform origin-bottom transition-transform duration-300 group-hover:scale-x-0 z-[-1]"></div>
+                  <div className="absolute inset-0 bg-black w-full transform origin-right transition-transform duration-300 group-hover:scale-x-0 z-[-1]"></div>
                 </CustomButton>
               </Link>
             </div>
