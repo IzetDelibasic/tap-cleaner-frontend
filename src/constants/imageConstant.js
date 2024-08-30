@@ -1,3 +1,5 @@
-export const landingImage = "../../public/images/landingImage.png";
+export const heroImage = "../../public/images/heroImage.webp";
 
-export const heroImage = "../../public/images/heroImage.png";
+export const landingImage = "../../public/images/landingImage.webp";
+
+export const trashIcon = "../../public/images/trashIcon.webp";
