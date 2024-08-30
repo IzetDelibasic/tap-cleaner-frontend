@@ -4,6 +4,8 @@ import { environment } from "../../environments/environments";
 
 const ContainersSection = () => {
   const [containers, setContainers] = useState([]);
+  const [filteredContainers, setFilteredContainers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,7 +35,7 @@ const ContainersSection = () => {
         );
 
         setContainers(response.data);
-        console.log(response.data);
+        setFilteredContainers(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -43,6 +45,21 @@ const ContainersSection = () => {
 
     fetchContainers();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = containers.filter((container) =>
+        container.adress.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredContainers(filtered);
+    } else {
+      setFilteredContainers(containers);
+    }
+  }, [searchQuery, containers]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   const handleSearchLocation = (coordinates) => {
     window.open(`https://www.google.com/maps?q=${coordinates}`, "_blank");
@@ -67,9 +84,18 @@ const ContainersSection = () => {
           Containers
         </span>
       </h1>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search by address..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="border rounded-lg p-2 w-full mb-4"
+        />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-        {containers.length > 0 ? (
-          containers.map((container, index) => (
+        {filteredContainers.length > 0 ? (
+          filteredContainers.map((container, index) => (
             <div
               className="bg-white rounded-lg shadow-md p-6 mb-4 text-center border-[1px] border-opacity-25 border-black hover:border-blueColor ease-in-out duration-300"
               key={index}
