@@ -6,6 +6,7 @@ import {
   Login,
   Profile,
   Register,
+  UserPanel,
 } from "./pages/index.js";
 
 const router = createBrowserRouter([
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <Admin />,
+  },
+  {
+    path: "/admin/user-panel",
+    element: <UserPanel />,
   },
 ]);
 

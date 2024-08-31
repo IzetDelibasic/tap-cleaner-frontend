@@ -7,6 +7,7 @@ import { Navbar } from "../../components";
 // -Services-
 import { fetchUserData } from "../../services/userService";
 import { toast } from "react-toastify";
+import { environment } from "../../environments/environments";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -59,7 +60,7 @@ const Profile = () => {
       }
 
       await axios.put(
-        `https://localhost:7072/User/UpdateUser/${email}`,
+        `${environment.apiBaseUrl}/User/UpdateUser/${email}`,
         editableData,
         {
           headers: {
@@ -91,11 +92,15 @@ const Profile = () => {
   return (
     <div className="flex flex-col">
       <Navbar />
-
-      <div className="my-4 bg-white w-[90%] md:w-[60%] lg:w-[45%] text-black text-center border-[1px] border-gray-300 mx-auto font-montserrat p-4 rounded-md shadow-2xl flex flex-col">
+      <h1 className="my-6 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl text-center">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-gray-400 from-emerald-600">
+          Profile Page
+        </span>
+      </h1>
+      <div className="my-4 bg-white w-[90%] md:w-[70%] lg:w-[55%] text-black text-center border-[1px] border-gray-300 mx-auto font-montserrat p-4 rounded-md shadow-2xl flex flex-col">
         <div className="flex flex-col sm:flex-row justify-between items-center w-[80%] mx-auto">
           <div className="mr-2">
-            <div className="text-blueColor flex items-center justify-center">
+            <div className="text-blueColor flex items-center justify-center mb-4 sm:mb-0">
               {editableData.imageUrl ? (
                 <img
                   src={editableData.imageUrl}
@@ -107,10 +112,14 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <div>
+          <div className="">
             <div className="flex items-center justify-center bg-emerald-600 mb-2 text-white">
-              <div className="font-medium mr-1">{editableData.firstName}</div>
-              <div className="font-medium mr-1">{editableData.lastName}</div>
+              <div className="font-medium mr-1 text-[1.5rem]">
+                {editableData.firstName}
+              </div>
+              <div className="font-medium mr-1 text-[1.5rem]">
+                {editableData.lastName}
+              </div>
             </div>
             <div className="flex flex-col justify-center items-center mx-auto">
               <div className="font-medium mr-1">{userData.email}</div>
@@ -159,7 +168,7 @@ const Profile = () => {
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="bg-emerald-600 text-white w-[40%] mx-auto font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out mt-4"
+            className="bg-emerald-600 text-white w-[55%] sm:w-[30%] mx-auto font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out mt-4"
           >
             Edit Profile
           </button>

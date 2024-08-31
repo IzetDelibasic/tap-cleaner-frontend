@@ -138,7 +138,7 @@ const Admin = () => {
       <Navbar />
       <h1 className="my-6 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl text-center">
         <span className="text-transparent bg-clip-text bg-gradient-to-r to-gray-400 from-emerald-600">
-          Admin Section
+          Container Section
         </span>
       </h1>
       <div className="bg-white border-[1px] border-lightGreen p-6 rounded-lg shadow-md mt-6 md:w-[60%] w-[90%] mx-auto font-montserrat flex flex-col">

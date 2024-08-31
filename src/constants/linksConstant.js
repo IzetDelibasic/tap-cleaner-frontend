@@ -8,7 +8,11 @@ export const Links = [
     href: "/profile",
   },
   {
-    title: "Admin Section",
+    title: "Container Section",
     href: "/admin",
+  },
+  {
+    title: "User Panel",
+    href: "/admin/user-panel",
   },
 ];
