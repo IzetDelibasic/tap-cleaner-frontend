@@ -1,8 +1,11 @@
+// -React-
 import { useState } from "react";
 import { Link } from "react-router-dom";
+// -Icons-
 import { FaRegTrashAlt, FaTimes } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { MdLogout } from "react-icons/md";
+// -Constants-
 import { Links } from "../../constants/linksConstant";
 
 const Navbar = () => {
@@ -33,8 +36,7 @@ const Navbar = () => {
           <ul className="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 text-white">
             {Links.map(
               (link, index) =>
-                (link.title !== "Admin Section" ||
-                  link.title !== "User Panel" ||
+                (link.title !== "Container Section" ||
                   userRole === "Admin") && (
                   <li key={index}>
                     <Link

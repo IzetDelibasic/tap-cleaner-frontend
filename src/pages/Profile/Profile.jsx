@@ -1,4 +1,7 @@
+// -React-
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+// -Axios-
 import axios from "axios";
 // -ReactIcons-
 import { FaUserCircle } from "react-icons/fa";
@@ -6,7 +9,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { Navbar } from "../../components";
 // -Services-
 import { fetchUserData } from "../../services/userService";
-import { toast } from "react-toastify";
+// -Environment-
 import { environment } from "../../environments/environments";
 
 const Profile = () => {
@@ -113,7 +116,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="">
-            <div className="flex items-center justify-center bg-emerald-600 mb-2 text-white">
+            <div className="flex items-center justify-center bg-emerald-600 mb-2 p-2 rounded-tr-xl text-white">
               <div className="font-medium mr-1 text-[1.5rem]">
                 {editableData.firstName}
               </div>

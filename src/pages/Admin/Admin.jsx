@@ -1,9 +1,14 @@
+// -React-
 import { useState, useEffect } from "react";
-import { fetchContainers } from "../../services/containersService";
 import { toast } from "react-toastify";
+// -Services-
+import { fetchContainers } from "../../services/containersService";
+// -Axios-
 import axios from "axios";
-import { environment } from "../../environments/environments";
+// -Components-
 import { Navbar } from "../../components";
+// -Environment
+import { environment } from "../../environments/environments";
 
 const Admin = () => {
   const [containers, setContainers] = useState([]);
@@ -78,6 +83,40 @@ const Admin = () => {
       setFilteredContainers(containersData);
     } catch (err) {
       toast.error("Error clearing reports: " + err.message);
+    }
+  };
+
+  const deleteContainer = async (containerName) => {
+    try {
+      const loggedInUserData = localStorage.getItem("loggedInUserData");
+
+      if (!loggedInUserData) {
+        console.error("User data not found in local storage.");
+        return;
+      }
+
+      const parsedUserData = JSON.parse(loggedInUserData);
+      const token = parsedUserData.jwtToken;
+
+      if (!token) {
+        throw new Error("Token not found in local storage.");
+      }
+
+      await axios.request({
+        method: "delete",
+        url: `${environment.apiBaseUrl}/Container/DeleteContainerByName`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: containerName,
+      });
+
+      toast.success(`Container ${containerName} deleted successfully.`);
+      const containersData = await fetchContainers(token);
+      setFilteredContainers(containersData);
+    } catch (err) {
+      toast.error("Error deleting container: " + err.message);
     }
   };
 
@@ -223,18 +262,26 @@ const Admin = () => {
                 <p className="font-medium mr-2">Number of Reports:</p>
                 <p>{container.numberOfReports || 0}</p>
               </div>
-              <button
-                onClick={() => clearReports(container.name)}
-                className="bg-gradient-to-r to-emerald-500 from-emerald-700 text-white font-medium py-2 px-6 rounded-3xl hover:bg-green-800 transition duration-300 ease-in-out"
-              >
-                Clear
-              </button>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => clearReports(container.name)}
+                  className="bg-emerald-600 hover:bg-emerald-800 duration-300 ease-in-out text-white font-medium py-2 px-6 rounded-3xl text-xs md:text-sm mr-2"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => deleteContainer(container.name)}
+                  className="bg-red-600 hover:bg-red-800 duration-300 ease-in-out text-white font-medium py-2 px-6 rounded-3xl text-xs md:text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))
         ) : (
-          <p className="text-center font-montserrat text-xl">
+          <div className="text-center col-span-1 md:col-span-2 text-xl font-bold">
             No containers available.
-          </p>
+          </div>
         )}
       </div>
     </>

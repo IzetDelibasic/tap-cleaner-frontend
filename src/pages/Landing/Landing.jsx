@@ -1,5 +1,8 @@
+// -React-
 import { Link } from "react-router-dom";
+// -Components-
 import { CustomButton } from "../../components";
+// -Constants-
 import {
   landingImage,
   heroImage,

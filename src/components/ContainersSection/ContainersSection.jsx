@@ -1,7 +1,11 @@
+// -React-
 import { useState, useEffect } from "react";
-import { fetchContainers } from "../../services/containersService";
 import { toast } from "react-toastify";
+// -Services-
+import { fetchContainers } from "../../services/containersService";
+// -Axios-
 import axios from "axios";
+// -Environment-
 import { environment } from "../../environments/environments";
 
 const ContainersSection = () => {

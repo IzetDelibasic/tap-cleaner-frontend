@@ -1,3 +1,4 @@
+// -React-
 import { useState } from "react";
 import { useNavigate, Link, Form } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,6 +8,7 @@ import { backgroundImage, trashIcon } from "../../constants/imageConstant";
 import { FormRow } from "../../components";
 // -Axios-
 import axios from "axios";
+// -Environment-
 import { environment } from "../../environments/environments";
 
 const Register = () => {
