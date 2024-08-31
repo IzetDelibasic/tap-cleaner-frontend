@@ -4,11 +4,11 @@ export const Links = [
     href: "/dashboard",
   },
   {
-    title: "Support",
-    href: "/support",
-  },
-  {
     title: "Profile",
     href: "/profile",
+  },
+  {
+    title: "Admin Section",
+    href: "/admin",
   },
 ];

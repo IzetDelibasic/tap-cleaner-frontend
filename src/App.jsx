@@ -1,5 +1,12 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Dashboard, Landing, Login, Profile, Register } from "./pages/index.js";
+import {
+  Admin,
+  Dashboard,
+  Landing,
+  Login,
+  Profile,
+  Register,
+} from "./pages/index.js";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/admin",
+    element: <Admin />,
   },
 ]);
 
