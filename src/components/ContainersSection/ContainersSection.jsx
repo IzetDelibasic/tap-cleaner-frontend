@@ -1,7 +1,8 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { environment } from "../../environments/environments";
+import { useState, useEffect } from "react";
+import { fetchContainers } from "../../services/containersService";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { environment } from "../../environments/environments";
 
 const ContainersSection = () => {
   const [containers, setContainers] = useState([]);
@@ -11,32 +12,25 @@ const ContainersSection = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchContainers = async () => {
+    const fetchData = async () => {
       try {
         const loggedInUserData = localStorage.getItem("loggedInUserData");
 
         if (!loggedInUserData) {
-          console.error("Korisnički podaci nisu pronađeni u lokalnoj pohrani.");
+          console.error("User data not found in local storage.");
           return;
         }
 
         const parsedUserData = JSON.parse(loggedInUserData);
         const token = parsedUserData.jwtToken;
+
         if (!token) {
-          throw new Error("Token nije pronađen u lokalnoj pohrani.");
+          throw new Error("Token not found in local storage.");
         }
 
-        const response = await axios.get(
-          `${environment.apiBaseUrl}/Container/GetContainers`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setContainers(response.data);
-        setFilteredContainers(response.data);
+        const containersData = await fetchContainers(token);
+        setContainers(containersData);
+        setFilteredContainers(containersData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -44,7 +38,7 @@ const ContainersSection = () => {
       }
     };
 
-    fetchContainers();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -115,7 +109,6 @@ const ContainersSection = () => {
   if (loading) {
     return (
       <div className="text-center font-montserrat text-xl mt-6">
-        {" "}
         Containers loading...
       </div>
     );

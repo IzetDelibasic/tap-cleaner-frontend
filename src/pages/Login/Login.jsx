@@ -35,12 +35,15 @@ const Login = () => {
         `${environment.apiBaseUrl}/User/Login`,
         userData
       );
-      const jwtToken = response.data;
+      const { token, rola } = response.data;
       console.log(response.data);
+
       const loggedInUserData = {
-        jwtToken,
+        jwtToken: token,
         email,
+        role: rola,
       };
+
       localStorage.clear();
       localStorage.setItem(
         "loggedInUserData",

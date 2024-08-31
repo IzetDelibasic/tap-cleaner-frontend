@@ -6,7 +6,9 @@ import { FaUserCircle } from "react-icons/fa";
 import { Navbar } from "../../components";
 // -Services-
 import { fetchUserData } from "../../services/userService";
+import { fetchContainers } from "../../services/containersService";
 import { toast } from "react-toastify";
+import { environment } from "../../environments/environments";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -16,6 +18,9 @@ const Profile = () => {
     imageUrl: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [containers, setContainers] = useState([]);
+  const [loadingContainers, setLoadingContainers] = useState(true);
+  const [errorContainers, setErrorContainers] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -31,6 +36,35 @@ const Profile = () => {
     };
 
     getUserData();
+  }, []);
+
+  useEffect(() => {
+    const getContainers = async () => {
+      try {
+        const loggedInUserData = localStorage.getItem("loggedInUserData");
+
+        if (!loggedInUserData) {
+          toast.error("User data not found in local storage.");
+          return;
+        }
+
+        const parsedUserData = JSON.parse(loggedInUserData);
+        const token = parsedUserData.jwtToken;
+
+        if (!token) {
+          throw new Error("Token not found in local storage.");
+        }
+
+        const containersData = await fetchContainers(token);
+        setContainers(containersData);
+      } catch (err) {
+        setErrorContainers(err.message);
+      } finally {
+        setLoadingContainers(false);
+      }
+    };
+
+    getContainers();
   }, []);
 
   const handleInputChange = (e) => {
@@ -59,7 +93,7 @@ const Profile = () => {
       }
 
       await axios.put(
-        `https://localhost:7072/User/UpdateUser/${email}`,
+        `${environment.apiBaseUrl}/User/UpdateUser/${email}`,
         editableData,
         {
           headers: {
@@ -91,13 +125,10 @@ const Profile = () => {
   return (
     <div className="flex flex-col">
       <Navbar />
-      <div className="my-4 bg-white w-[90%] md:w-[60%] text-black text-center border-[1px] border-gray-300 mx-auto font-montserrat p-4 rounded-md shadow-2xl flex flex-col">
-        <div className="flex items-center justify-center bg-emerald-600 mb-2 text-white">
-          <div className="font-medium mr-1">{editableData.firstName}</div>
-          <div className="font-medium mr-1">{editableData.lastName}</div>
-        </div>
-        <div className="flex flex-col sm:flex-row">
-          <div className="flex flex-col mx-auto">
+
+      <div className="my-4 bg-white w-[90%] md:w-[60%] lg:w-[45%] text-black text-center border-[1px] border-gray-300 mx-auto font-montserrat p-4 rounded-md shadow-2xl flex flex-col">
+        <div className="flex flex-col sm:flex-row justify-between items-center w-[80%] mx-auto">
+          <div className="mr-2">
             <div className="text-blueColor flex items-center justify-center">
               {editableData.imageUrl ? (
                 <img
@@ -110,8 +141,14 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-col justify-center items-center mx-auto">
-            <div className="font-medium mr-1">{userData.email}</div>
+          <div>
+            <div className="flex items-center justify-center bg-emerald-600 mb-2 text-white">
+              <div className="font-medium mr-1">{editableData.firstName}</div>
+              <div className="font-medium mr-1">{editableData.lastName}</div>
+            </div>
+            <div className="flex flex-col justify-center items-center mx-auto">
+              <div className="font-medium mr-1">{userData.email}</div>
+            </div>
           </div>
         </div>
         {isEditing ? (
@@ -142,7 +179,7 @@ const Profile = () => {
             />
             <button
               onClick={handleUpdate}
-              className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out"
+              className="bg-emerald-600 text-white font-medium py-2 px-2 sm:px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out"
             >
               Save Changes
             </button>
@@ -156,10 +193,54 @@ const Profile = () => {
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out mt-4"
+            className="bg-emerald-600 text-white w-[40%] mx-auto font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out mt-4"
           >
             Edit Profile
           </button>
+        )}
+      </div>
+
+      <div className="my-4 bg-white w-[90%] md:w-[60%] lg:w-[45%] text-black text-center border-[1px] border-gray-300 mx-auto font-montserrat p-4 rounded-md shadow-2xl">
+        <h2 className="text-2xl font-bold mb-4">Containers</h2>
+        {loadingContainers ? (
+          <div className="text-center">Loading containers...</div>
+        ) : errorContainers ? (
+          <div className="text-center text-red-600">
+            Error: {errorContainers}
+          </div>
+        ) : (
+          <div>
+            {containers.length > 0 ? (
+              containers.map((container, index) => (
+                <div
+                  className="bg-gray-100 rounded-lg p-4 mb-4 border border-gray-300"
+                  key={index}
+                >
+                  <h3 className="text-xl font-semibold mb-2">
+                    {container.name}
+                  </h3>
+                  <p>
+                    <strong>Address:</strong> {container.adress}
+                  </p>
+                  <p>
+                    <strong>Coordinates:</strong> {container.coordinates}
+                  </p>
+                  <p>
+                    <strong>Type:</strong> {container.type}
+                  </p>
+                  <p>
+                    <strong>Condition:</strong> {container.condition}
+                  </p>
+                  <p>
+                    <strong>Number of Reports:</strong>{" "}
+                    {container.numberOfReports}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No containers available.</p>
+            )}
+          </div>
         )}
       </div>
     </div>
