@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { MdLogout } from "react-icons/md";
+// -Constants-
+import { Links } from "../../constants/linksConstant";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +29,33 @@ const Navbar = () => {
           <button onClick={toggleMenu} className="text-white">
             {isOpen ? <FaTimes className="" /> : <FiMenu className="" />}
           </button>
+        </div>
+        <div
+          className={`${isOpen ? "block" : "hidden"} w-full md:flex md:w-auto`}
+        >
+          <ul className="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 text-white">
+            {Links.map((link, index) => (
+              <li key={index}>
+                <Link
+                  to={link.href}
+                  className="block py-2 px-4 text-center md:inline-block hover:text-gray-300 ease-in-out duration-300"
+                >
+                  {link.title}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("jwtToken");
+                  window.location.href = "/";
+                }}
+                className="flex justify-center items-center py-2 md:pt-[0.6rem] mx-auto"
+              >
+                <MdLogout className="text-white mt-2 md:mt-0 mx-auto hover:text-gray-300 ease-in-out duration-300" />
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

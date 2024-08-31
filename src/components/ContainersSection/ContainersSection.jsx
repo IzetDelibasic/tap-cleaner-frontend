@@ -117,7 +117,7 @@ const ContainersSection = () => {
     return (
       <div className="text-center font-montserrat text-xl mt-6">
         {" "}
-        Container loading...
+        Containers loading...
       </div>
     );
   }
