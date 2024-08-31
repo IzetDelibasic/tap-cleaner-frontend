@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { environment } from "../../environments/environments";
+import { toast } from "react-toastify";
 
 const ContainersSection = () => {
   const [containers, setContainers] = useState([]);
@@ -65,16 +66,68 @@ const ContainersSection = () => {
     window.open(`https://www.google.com/maps?q=${coordinates}`, "_blank");
   };
 
-  const handleReportCondition = (containerId) => {
-    console.log(`${containerId}`);
+  const handleReportCondition = async (containerId) => {
+    try {
+      const loggedInUserData = localStorage.getItem("loggedInUserData");
+
+      if (!loggedInUserData) {
+        toast.error("User data not found in local storage.");
+        return;
+      }
+
+      const parsedUserData = JSON.parse(loggedInUserData);
+      const token = parsedUserData.jwtToken;
+      const userEmail = parsedUserData.email;
+
+      if (!token) {
+        throw new Error("Token not found in local storage.");
+      }
+
+      const container = containers.find((c) => c.id === containerId);
+
+      if (!container) {
+        throw new Error("Container not found.");
+      }
+
+      await axios.post(
+        `${environment.apiBaseUrl}/Container/ReportContainer`,
+        {
+          userEmail: userEmail,
+          containerName: container.name,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(
+        "Report successfully sent, our team will react as soon as possible."
+      );
+    } catch (err) {
+      toast.error(
+        "An error occurred while registering the container:",
+        err.message
+      );
+    }
   };
 
   if (loading) {
-    return <div>Učitavanje kontejnera...</div>;
+    return (
+      <div className="text-center font-montserrat text-xl mt-6">
+        {" "}
+        Container loading...
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Greška: {error}</div>;
+    return (
+      <div className="text-center font-montserrat text-xl mt-6">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
@@ -97,33 +150,40 @@ const ContainersSection = () => {
         {filteredContainers.length > 0 ? (
           filteredContainers.map((container, index) => (
             <div
-              className="bg-white rounded-lg shadow-md p-6 mb-4 text-center border-[1px] border-opacity-25 border-black hover:border-blueColor ease-in-out duration-300"
+              className="bg-white rounded-lg shadow-md p-6 mb-4 text-sm lg:text-base text-center border-[1px] border-opacity-25 border-black hover:border-blueColor ease-in-out duration-300 font-montserrat"
               key={index}
             >
               <h2 className="text-xl font-bold mb-2">{container.name || ""}</h2>
-              <p className="text-gray-600 mb-2">
-                Address: {container.adress || ""}
-              </p>
-              <p className="text-gray-600 mb-2">
-                Coordinates: {container.coordinates || ""}
-              </p>
-              <p className="text-gray-600 mb-2">Type: {container.type || ""}</p>
-              <p className="text-gray-600 mb-2">
-                Condition: {container.condition || ""}
-              </p>
-              <p className="text-gray-600 mb-2">
-                Number of Reports: {container.numberOfReports || 0}
-              </p>
+              <div className="flex justify-center items-center mb-2">
+                <p className="font-medium mr-2">Address:</p>
+                <p>{container.adress || ""}</p>
+              </div>
+              <div className="flex justify-center items-center mb-2">
+                <p className="font-medium mr-2">Coordinates:</p>
+                <p>{container.coordinates || ""}</p>
+              </div>
+              <div className="flex justify-center items-center mb-2">
+                <p className="font-medium mr-2">Type:</p>
+                <p>{container.type || ""}</p>
+              </div>
+              <div className="flex justify-center items-center mb-2">
+                <p className="font-medium mr-2">Condition:</p>
+                <p>{container.condition || ""}</p>
+              </div>
+              <div className="flex justify-center items-center mb-2">
+                <p className="font-medium mr-2">Number of Reports:</p>
+                <p>{container.numberOfReports || 0}</p>
+              </div>
               <div className="flex justify-center gap-4 mt-4">
                 <button
                   onClick={() => handleSearchLocation(container.coordinates)}
-                  className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-emerald-800 transition duration-300 ease-in-out"
+                  className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-3xl hover:bg-emerald-800 transition duration-300 ease-in-out"
                 >
                   Location
                 </button>
                 <button
                   onClick={() => handleReportCondition(container.id)}
-                  className="bg-red-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-red-800 transition duration-300 ease-in-out"
+                  className="bg-red-600 text-white font-medium py-2 px-4 rounded-3xl hover:bg-red-800 transition duration-300 ease-in-out"
                 >
                   Report
                 </button>
@@ -131,7 +191,9 @@ const ContainersSection = () => {
             </div>
           ))
         ) : (
-          <p className="text-center">No containers available.</p>
+          <p className="text-center font-montserrat text-xl">
+            No containers available.
+          </p>
         )}
       </div>
     </div>
