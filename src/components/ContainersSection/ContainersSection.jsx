@@ -66,7 +66,7 @@ const ContainersSection = () => {
     window.open(`https://www.google.com/maps?q=${coordinates}`, "_blank");
   };
 
-  const handleReportCondition = async (containerId) => {
+  const handleReportCondition = async (index) => {
     try {
       const loggedInUserData = localStorage.getItem("loggedInUserData");
 
@@ -83,7 +83,7 @@ const ContainersSection = () => {
         throw new Error("Token not found in local storage.");
       }
 
-      const container = containers.find((c) => c.id === containerId);
+      const container = containers[index];
 
       if (!container) {
         throw new Error("Container not found.");
@@ -107,8 +107,7 @@ const ContainersSection = () => {
       );
     } catch (err) {
       toast.error(
-        "An error occurred while registering the container:",
-        err.message
+        "An error occurred while registering the container: " + err.message
       );
     }
   };
@@ -182,7 +181,7 @@ const ContainersSection = () => {
                   Location
                 </button>
                 <button
-                  onClick={() => handleReportCondition(container.id)}
+                  onClick={() => handleReportCondition(index)}
                   className="bg-red-600 text-white font-medium py-2 px-4 rounded-3xl hover:bg-red-800 transition duration-300 ease-in-out"
                 >
                   Report
